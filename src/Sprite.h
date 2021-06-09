@@ -10,7 +10,7 @@ public:
     ~Sprite();
     void DrawSprite(int x, int y, SDL_Renderer* renderer);
     void DrawSprite(int x, int y, float scale, SDL_Renderer* renderer);
-    SDL_Texture* getTex();
+    SDL_Texture* getTex() const;
     SDL_Rect getRect();
 
 private:

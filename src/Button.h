@@ -13,4 +13,5 @@ private:
     Text* button_text;
     SDL_Color button_color;
     SDL_Rect button_rect;
+    SDL_Rect text_rect;
 };

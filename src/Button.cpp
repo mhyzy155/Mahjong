@@ -1,17 +1,17 @@
 #include "Button.h"
 
-Button::Button(Text* txt, Uint8 r, Uint8 g, Uint8 b, int margin, int w, int h) : button_text(txt), button_color({r, g, b, 255}) {
-    SDL_Rect textRect = button_text->getTextRect();
-    button_rect.w = (textRect.w > w) ? textRect.w : w;
-    button_rect.h = (textRect.h > h) ? textRect.h : h;
+Button::Button(Text* txt, Uint8 r, Uint8 g, Uint8 b, int margin, int w, int h) : button_text{txt}, button_color{r, g, b, 255} {
+    text_rect = button_text->getTextRect();
+    button_rect.w = (text_rect.w > w) ? text_rect.w : w;
+    button_rect.h = (text_rect.h > h) ? text_rect.h : h;
     button_rect.w += 2 * margin;
     button_rect.h += 2 * margin;
 }
 
-Button::Button(Text* txt, SDL_Color col, int margin, int w, int h) : button_text(txt), button_color(col) {
-    SDL_Rect textRect = button_text->getTextRect();
-    button_rect.w = (textRect.w > w) ? textRect.w : w;
-    button_rect.h = (textRect.h > h) ? textRect.h : h;
+Button::Button(Text* txt, SDL_Color col, int margin, int w, int h) : button_text{txt}, button_color{col} {
+    text_rect = button_text->getTextRect();
+    button_rect.w = (text_rect.w > w) ? text_rect.w : w;
+    button_rect.h = (text_rect.h > h) ? text_rect.h : h;
     button_rect.w += 2 * margin;
     button_rect.h += 2 * margin;
 }
@@ -30,9 +30,7 @@ void Button::drawButton(int x, int y, SDL_Renderer* renderer) {
     SDL_RenderDrawRect(renderer, &button_rect);
     SDL_RenderFillRect(renderer, &button_rect);
 
-    SDL_Rect textRect = button_text->getTextRect();
-
-    button_text->drawText(x - textRect.w / 2, y - textRect.h / 2, renderer);
+    button_text->drawText(x - text_rect.w / 2, y - text_rect.h / 2, renderer);
 }
 
 SDL_Rect Button::getButtonRect() {

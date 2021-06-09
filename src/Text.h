@@ -1,5 +1,4 @@
 #pragma once
-#include <SDL2/SDL_ttf.h>
 
 #include "Graphics.h"
 
@@ -11,12 +10,13 @@ public:
     ~Text();
     void drawText(int x, int y, SDL_Surface* destination);
     void drawText(int x, int y, SDL_Renderer* renderer);
-    SDL_Surface* getTextSurface();
     SDL_Rect getTextRect();
 
 private:
+    void updateSurface();
     SDL_Color color;
     int font_size;
     std::string text;
+    SDL_Surface *surface;
     static size_t count;
 };

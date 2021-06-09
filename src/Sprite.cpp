@@ -6,8 +6,7 @@ Sprite::Sprite(std::string path, SDL_Renderer* renderer) : img_path(path) {
         printf("Failed to load texture %s\n\terror : %s \n", img_path.c_str(), SDL_GetError());
     } else
         printf("Image %s loaded\n", img_path.c_str());
-
-    SDL_QueryTexture(texture, NULL, NULL, &img_rect.w, &img_rect.h);
+        SDL_QueryTexture(texture, NULL, NULL, &img_rect.w, &img_rect.h);
 }
 
 Sprite::~Sprite(){
@@ -32,7 +31,7 @@ void Sprite::DrawSprite(int x, int y, float scale, SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, texture, NULL, &dest_rect);
 }
 
-SDL_Texture* Sprite::getTex() {
+SDL_Texture* Sprite::getTex() const {
     return texture;
 }
 

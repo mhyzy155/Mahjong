@@ -1,21 +1,29 @@
 #include "Text.h"
+#include "Font.h"
 
 size_t Text::count = 0;
 
-Text::Text(std::string txt, int size, Uint8 r, Uint8 g, Uint8 b, Uint8 a) : text(txt), font_size(size), color({r, g, b, a}) {
+Text::Text(std::string txt, int size, Uint8 r, Uint8 g, Uint8 b, Uint8 a) : text{txt}, font_size{size}, color{r, g, b, a}, surface{nullptr} {
     count++;
+    updateSurface();
 }
 
-Text::Text(std::string txt, int size, SDL_Color col) : text(txt), font_size(size), color(col) {
+Text::Text(std::string txt, int size, SDL_Color col) : text{txt}, font_size{size}, color{col}, surface{nullptr} {
     count++;
+    updateSurface();
 }
 
-Text::Text(const Text &t) : color(t.color), font_size(t.font_size), text(t.text) {
+Text::Text(const Text &t) : color{t.color}, font_size{t.font_size}, text{t.text}, surface{nullptr} {
     count++;
+    updateSurface();
 }
 
 Text::~Text() {
     count--;
+    if(surface){
+        SDL_FreeSurface(surface);
+        surface = nullptr;
+    }
     if (count < 1 && TTF_WasInit()) {
         TTF_Quit();
     }
@@ -23,28 +31,24 @@ Text::~Text() {
 
 void Text::drawText(int x, int y, SDL_Surface *destination) {
     SDL_Rect coordinates{x, y};
-    SDL_Surface *message = getTextSurface();
-    if (!message) {
-        printf("Text::getTextSurface error\n");
+    if (!surface) {
+        printf("Text::drawText error: missing textSurface\n");
         return;
     }
 
-    SDL_BlitSurface(message, NULL, destination, &coordinates);
+    SDL_BlitSurface(surface, NULL, destination, &coordinates);
     if (SDL_SetColorKey(destination, SDL_TRUE, SDL_MapRGB(destination->format, 0, 0, 0)) < 0) {
         printf("SDL_SetColorKey error: %s\n", SDL_GetError());
     }
-
-    SDL_FreeSurface(message);
 }
 
 void Text::drawText(int x, int y, SDL_Renderer *renderer) {
-    SDL_Surface *message = getTextSurface();
-    if (!message) {
-        printf("Text::getTextSurface error\n");
+    if (!surface) {
+        printf("Text::drawText error: missing textSurface\n");
         return;
     }
 
-    SDL_Rect coordinates = message->clip_rect;
+    SDL_Rect coordinates = surface->clip_rect;
     coordinates.x = x;
     coordinates.y = y;
 
@@ -59,47 +63,44 @@ void Text::drawText(int x, int y, SDL_Renderer *renderer) {
     //SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, destination);
     */
    
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, message);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
 
     SDL_RenderCopy(renderer, texture, NULL, &coordinates);
-
     SDL_DestroyTexture(texture);
     //SDL_FreeSurface(destination);
-    SDL_FreeSurface(message);
 }
 
-SDL_Surface *Text::getTextSurface() {
+void Text::updateSurface() {
     if (!TTF_WasInit()) {
         if (TTF_Init() < 0) {
             printf("TTF_Init error: %s\n", TTF_GetError());
-            return nullptr;
+            return;
         }
     }
 
-    TTF_Font *font = TTF_OpenFont("../assets/fonts/LiberationSans-Regular.ttf", font_size);
-    if (!font) {
-        printf("TTF_OpenFont error: %s\n", TTF_GetError());
-        return nullptr;
+    Font font("../assets/fonts/LiberationSans-Regular.ttf", font_size);
+    if(!font){
+        printf("Text::updateSurface error creating a font\n");
+        return;
     }
 
-    SDL_Surface *message = TTF_RenderText_Solid(font, text.c_str(), color);
-    if (!message) {
+    if(surface){
+        SDL_FreeSurface(surface);
+        surface = nullptr;
+    }
+
+    surface = TTF_RenderText_Solid(font.getFont(), text.c_str(), color);
+    if (!surface) {
         printf("TTF_RenderText_Solid error: %s\n", TTF_GetError());
     }
-
-    TTF_CloseFont(font);
-    return message;
 }
 
 SDL_Rect Text::getTextRect() {
-    SDL_Surface *message = getTextSurface();
-    if (!message) {
-        printf("Text::getTextSurface error\n");
+    if (!surface) {
+        printf("Text::getTextRect error: missing textSurface\n");
         return SDL_Rect{0, 0, 0, 0};
     }
 
-    SDL_Rect result = message->clip_rect;
-
-    SDL_FreeSurface(message);
+    SDL_Rect result = surface->clip_rect;
     return result;
 }
