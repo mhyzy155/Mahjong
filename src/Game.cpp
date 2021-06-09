@@ -137,7 +137,7 @@ void Game::Update() {
                 buttonHard->drawButton(windowWidth / 2, windowHeight / 2 + 100, renderer);
                 break;
             case 5:
-                gfx->DrawSprites(board);
+                gfx->DrawBoardSprites(board);
                 break;
             case 6:
                 gfx->DrawBG();

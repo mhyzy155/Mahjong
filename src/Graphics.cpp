@@ -2,11 +2,7 @@
 
 #include <SDL2/SDL_ttf.h>
 
-Graphics::Graphics(SDL_Renderer* gRender, SDL_Window* gWindow, int windowW, int windowH) {
-    renderer = gRender;
-    window = gWindow;
-    windowWidth = windowW;
-    windowHeight = windowH;
+Graphics::Graphics(SDL_Renderer* gRender, SDL_Window* gWindow, int windowW, int windowH): renderer{gRender}, window{gWindow}, windowWidth{windowW}, windowHeight{windowH} {
     tileOffset = 8;
     tileMargin = 4;
     tileScale = 1;
@@ -14,33 +10,18 @@ Graphics::Graphics(SDL_Renderer* gRender, SDL_Window* gWindow, int windowW, int 
     graphicsBackground = new Sprite("../assets/textures/" + texture_path + "/background.jpg", renderer);
     graphicsBase = new Sprite("../assets/textures/" + texture_path + "/base.png", renderer);
     graphicsPicked = new Sprite("../assets/textures/" + texture_path + "/pickedtile.png", renderer);
-    Sprite* tile0 = new Sprite("../assets/textures/" + texture_path + "/new_tile0.png", renderer);
-    tileWidth = tile0->getRect().w;
-    tileHeight = tile0->getRect().h;
-    Sprite* tile1 = new Sprite("../assets/textures/" + texture_path + "/new_tile1.png", renderer);
-    Sprite* tile2 = new Sprite("../assets/textures/" + texture_path + "/new_tile2.png", renderer);
-    Sprite* tile3 = new Sprite("../assets/textures/" + texture_path + "/new_tile3.png", renderer);
-    Sprite* tile4 = new Sprite("../assets/textures/" + texture_path + "/new_tile4.png", renderer);
-    Sprite* tile5 = new Sprite("../assets/textures/" + texture_path + "/new_tile5.png", renderer);
-    Sprite* tile6 = new Sprite("../assets/textures/" + texture_path + "/new_tile6.png", renderer);
-    Sprite* tile7 = new Sprite("../assets/textures/" + texture_path + "/new_tile7.png", renderer);
-    Sprite* tile8 = new Sprite("../assets/textures/" + texture_path + "/new_tile8.png", renderer);
-    addSprite(tile0);
-    addSprite(tile1);
-    addSprite(tile2);
-    addSprite(tile3);
-    addSprite(tile4);
-    addSprite(tile5);
-    addSprite(tile6);
-    addSprite(tile7);
-    addSprite(tile8);
+
+    for(int i = 0; i < 9; i++){
+        graphicsTiles.push_back(new Sprite("../assets/textures/" + texture_path + "/new_tile" + std::to_string(i) + ".png", renderer));
+    }
+    tileRect = graphicsTiles[0]->getRect();
 }
 
 Graphics::~Graphics() {
     delete graphicsBackground;
     delete graphicsBase;
     delete graphicsPicked;
-    deleteAllSprites();
+    deleteAllTiles();
 }
 
 void Graphics::DrawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b) {
@@ -51,7 +32,7 @@ void Graphics::DrawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b) {
     SDL_RenderFillRect(renderer, &rect);
 }
 
-void Graphics::DrawSprites(Board* board) {
+void Graphics::DrawBoardSprites(Board* board) {
     graphicsBackground->DrawSprite((windowWidth - graphicsBackground->getRect().w) / 2, (windowHeight - graphicsBackground->getRect().h) / 2, renderer);
 
     int** TilesBoard = board->getBoard();
@@ -107,7 +88,7 @@ void Graphics::Draw(Board* board) {
     SDL_RenderClear(renderer);
 
     graphicsBackground->DrawSprite((windowWidth - graphicsBackground->getRect().w) / 2, (windowHeight - graphicsBackground->getRect().h) / 2, renderer);
-    DrawSprites(board);
+    DrawBoardSprites(board);
 
     SDL_RenderPresent(renderer);
 }
@@ -129,14 +110,14 @@ void Graphics::addSprite(Sprite* sprite, int n) {
     graphicsTiles.insert(it, sprite);
 }
 
-void Graphics::deleteAllSprites() {
+void Graphics::deleteAllTiles() {
     for (std::vector<Sprite*>::iterator it = graphicsTiles.begin(); it != graphicsTiles.end(); ++it) {
         delete (*it);
     }
     graphicsTiles.clear();
 }
 
-void Graphics::grabPickedTiles(std::vector<int> vector) {
+void Graphics::grabPickedTiles(const std::vector<int>& vector) {
     graphicsPickedTiles = vector;
 }
 
@@ -161,9 +142,9 @@ int Graphics::getWindowHeight() {
 }
 
 int Graphics::getTileWidth() {
-    return tileWidth;
+    return tileRect.w;
 }
 
 int Graphics::getTileHeight() {
-    return tileHeight;
+    return tileRect.h;
 }

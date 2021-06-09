@@ -9,16 +9,12 @@ public:
     Graphics(SDL_Renderer* gRender, SDL_Window* gWindow, int windowW, int windowH);
     ~Graphics();
     void DrawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b);
-    void DrawSprites(Board* board);
+    void DrawBoardSprites(Board* board);
     void DrawBG();
     void StartDraw();
     void Draw(Board* board);
     void EndDraw();
-    void addSprite(Sprite* sprite);
-    void addSprite(Sprite* sprite, int n);
-    void deleteAllSprites();
-
-    void grabPickedTiles(std::vector<int> vector);
+    void grabPickedTiles(const std::vector<int>& vector);
 
     int getOffset();
     int getMargin();
@@ -31,16 +27,18 @@ public:
     int getTileHeight();
 
 private:
-    SDL_Renderer* renderer;
-    SDL_Window* window;
+    void deleteAllTiles();
+    void addSprite(Sprite* sprite); //deprecated
+    void addSprite(Sprite* sprite, int n); //deprecated
+    SDL_Renderer* const renderer;
+    SDL_Window* const window;
     int windowWidth;
     int windowHeight;
     int tileOffset;
     int tileMargin;
     float tileScale;
 
-    int tileWidth;
-    int tileHeight;
+    SDL_Rect tileRect;
 
     Sprite* graphicsBackground;
     Sprite* graphicsBase;
