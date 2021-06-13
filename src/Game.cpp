@@ -116,34 +116,34 @@ void Game::Update() {
         gfx->StartDraw();
         switch (gameScene) {
             case 1:
-                buttonNewgame->drawButton(windowWidth / 2, windowHeight / 2 - 60, renderer);
-                buttonExit->drawButton(windowWidth / 2, windowHeight / 2 + 60, renderer);
+                buttonNewgame->draw(windowWidth / 2, windowHeight / 2 - 60, renderer);
+                buttonExit->draw(windowWidth / 2, windowHeight / 2 + 60, renderer);
                 break;
             case 2:
-                text_tileset->drawText(windowWidth / 2 - text_tileset->getTextRect().w / 2, 100, renderer);
+                text_tileset->draw(windowWidth / 2 - text_tileset->getRect().w / 2, 100, renderer);
                 for (int i = 0; i < tilesets; i++) {
-                    buttonTileset[i]->drawButton(windowWidth / 2, 300 + i * 150, renderer);
+                    buttonTileset[i]->draw(windowWidth / 2, 300 + i * 150, renderer);
                 }
                 break;
             case 3:
-                text_mode->drawText(windowWidth / 2 - text_mode->getTextRect().w / 2, 100, renderer);
-                buttonOriginal->drawButton(windowWidth / 2, windowHeight / 2 - 60, renderer);
-                buttonSimple->drawButton(windowWidth / 2, windowHeight / 2 + 60, renderer);
+                text_mode->draw(windowWidth / 2 - text_mode->getRect().w / 2, 100, renderer);
+                buttonOriginal->draw(windowWidth / 2, windowHeight / 2 - 60, renderer);
+                buttonSimple->draw(windowWidth / 2, windowHeight / 2 + 60, renderer);
                 break;
             case 4:
-                text_difficulty->drawText(windowWidth / 2 - text_difficulty->getTextRect().w / 2, 100, renderer);
-                buttonEasy->drawButton(windowWidth / 2, windowHeight / 2 - 100, renderer);
-                buttonMedium->drawButton(windowWidth / 2, windowHeight / 2, renderer);
-                buttonHard->drawButton(windowWidth / 2, windowHeight / 2 + 100, renderer);
+                text_difficulty->draw(windowWidth / 2 - text_difficulty->getRect().w / 2, 100, renderer);
+                buttonEasy->draw(windowWidth / 2, windowHeight / 2 - 100, renderer);
+                buttonMedium->draw(windowWidth / 2, windowHeight / 2, renderer);
+                buttonHard->draw(windowWidth / 2, windowHeight / 2 + 100, renderer);
                 break;
             case 5:
                 gfx->DrawBoardSprites(board);
                 break;
             case 6:
                 gfx->DrawBG();
-                text_win->drawText((windowWidth - text_win->getTextRect().w) / 2, (windowHeight - text_win->getTextRect().h) / 2, renderer);
-                buttonAgain->drawButton(windowWidth / 2, windowHeight / 2 + 150, renderer);
-                buttonExit->drawButton(windowWidth / 2, windowHeight / 2 + 250, renderer);
+                text_win->draw((windowWidth - text_win->getRect().w) / 2, (windowHeight - text_win->getRect().h) / 2, renderer);
+                buttonAgain->draw(windowWidth / 2, windowHeight / 2 + 150, renderer);
+                buttonExit->draw(windowWidth / 2, windowHeight / 2 + 250, renderer);
                 break;
         }
         gfx->EndDraw();
@@ -165,29 +165,29 @@ void Game::Update() {
                 case SDL_MOUSEBUTTONDOWN:
                     switch (gameScene) {
                         case 1:
-                            if (mouse->isPressed(buttonNewgame->getButtonRect())) gameScene = 2;
-                            if (mouse->isPressed(buttonExit->getButtonRect())) gameRunning = false;
+                            if (mouse->isPressed(buttonNewgame->getRect())) gameScene = 2;
+                            if (mouse->isPressed(buttonExit->getRect())) gameRunning = false;
                             break;
                         case 2:
                             for (int i = 0; i < tilesets; i++) {
-                                if (mouse->isPressed(buttonTileset[i]->getButtonRect())) {
+                                if (mouse->isPressed(buttonTileset[i]->getRect())) {
                                     gameTileset = i + 1;
                                     gameScene = 3;
                                 }
                             }
                             break;
                         case 3:
-                            if (mouse->isPressed(buttonOriginal->getButtonRect())) {
+                            if (mouse->isPressed(buttonOriginal->getRect())) {
                                 gameOriginal = true;
                                 gameScene = 4;
                             }
-                            if (mouse->isPressed(buttonSimple->getButtonRect())) {
+                            if (mouse->isPressed(buttonSimple->getRect())) {
                                 gameOriginal = false;
                                 gameScene = 4;
                             }
                             break;
                         case 4:
-                            if (mouse->isPressed(buttonEasy->getButtonRect())) {
+                            if (mouse->isPressed(buttonEasy->getRect())) {
                                 board = new Board(gameTileset, 9);
                                 gameBoardTiles = board->getBoardTilesNumber();
                                 gameScene = 5;
@@ -198,8 +198,8 @@ void Game::Update() {
                             buttonDown();
                             break;
                         case 6:
-                            if (mouse->isPressed(buttonAgain->getButtonRect())) gameScene = 2;
-                            if (mouse->isPressed(buttonExit->getButtonRect())) gameRunning = false;
+                            if (mouse->isPressed(buttonAgain->getRect())) gameScene = 2;
+                            if (mouse->isPressed(buttonExit->getRect())) gameRunning = false;
                             break;
                     }
 

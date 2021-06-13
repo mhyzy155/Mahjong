@@ -29,22 +29,9 @@ Text::~Text() {
     }
 }
 
-void Text::drawText(int x, int y, SDL_Surface *destination) {
-    SDL_Rect coordinates{x, y};
+void Text::draw(int x, int y, SDL_Renderer *renderer) {
     if (!surface) {
-        printf("Text::drawText error: missing textSurface\n");
-        return;
-    }
-
-    SDL_BlitSurface(surface, NULL, destination, &coordinates);
-    if (SDL_SetColorKey(destination, SDL_TRUE, SDL_MapRGB(destination->format, 0, 0, 0)) < 0) {
-        printf("SDL_SetColorKey error: %s\n", SDL_GetError());
-    }
-}
-
-void Text::drawText(int x, int y, SDL_Renderer *renderer) {
-    if (!surface) {
-        printf("Text::drawText error: missing textSurface\n");
+        printf("Text::draw error: missing textSurface\n");
         return;
     }
 
@@ -95,9 +82,9 @@ void Text::updateSurface() {
     }
 }
 
-SDL_Rect Text::getTextRect() {
+SDL_Rect Text::getRect() {
     if (!surface) {
-        printf("Text::getTextRect error: missing textSurface\n");
+        printf("Text::getRect error: missing textSurface\n");
         return SDL_Rect{0, 0, 0, 0};
     }
 

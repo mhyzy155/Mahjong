@@ -1,18 +1,18 @@
 #pragma once
 
+#include "Abstractions.h"
 #include "Graphics.h"
 
-class Text {
-public:
-	Text(std::string txt, int size, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
+class Text : public Drawable {
+   public:
+    Text(std::string txt, int size, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
     Text(std::string txt, int size, SDL_Color col);
     Text(const Text &t);
     ~Text();
-    void drawText(int x, int y, SDL_Surface* destination);
-    void drawText(int x, int y, SDL_Renderer* renderer);
-    SDL_Rect getTextRect();
+    void draw(int x, int y, SDL_Renderer *renderer);
+    SDL_Rect getRect();
 
-private:
+   private:
     void updateSurface();
     SDL_Color color;
     int font_size;
