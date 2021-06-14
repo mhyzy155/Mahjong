@@ -1,9 +1,10 @@
-#include "Scene.h"
+#include "Scenes.h"
 
 class SceneManager {
    public:
-    void draw();
-    bool react();
+    SceneManager();
+    void draw(Graphics* graphics);
+    void react(Mouse* mouse, GameState& state);
 
    private:
     std::unique_ptr<Scene> currScene;

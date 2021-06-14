@@ -20,6 +20,7 @@ public:
     int getMargin();
     float getScale();
 
+    SDL_Renderer* const getRenderer();
     int getWindowWidth();
     int getWindowHeight();
 

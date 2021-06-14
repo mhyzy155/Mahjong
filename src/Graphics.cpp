@@ -133,6 +133,10 @@ float Graphics::getScale() {
     return tileScale;
 }
 
+SDL_Renderer* const Graphics::getRenderer(){
+    return renderer;
+}
+
 int Graphics::getWindowWidth() {
     return windowWidth;
 }

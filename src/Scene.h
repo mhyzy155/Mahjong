@@ -1,18 +1,13 @@
 #include <vector>
 #include <memory>
 
-#include "Abstractions.h"
+#include "Graphics.h"
+#include "Mouse.h"
+#include "GameState.h"
 
 class Scene {
    public:
-    virtual void draw() = 0;
-    virtual bool react() = 0;
-    virtual std::unique_ptr<Scene> nextScene() = 0;
-    bool isQuit() { return _quit; };
+    virtual void draw(Graphics* graphics) = 0;
+    virtual std::unique_ptr<Scene> react(Mouse* mouse, GameState& state) = 0;
     virtual ~Scene(){};
-
-   protected:
-    std::vector<Drawable> drawables;
-    std::vector<Drawable> clickables;
-    bool _quit;
 };

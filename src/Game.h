@@ -5,6 +5,7 @@
 #include "Graphics.h"
 #include "Mouse.h"
 #include "Timer.h"
+#include "SceneManager.h"
 
 class Game {
 public:
@@ -19,34 +20,10 @@ public:
     Timer* timer;
 
 private:
-    void buttonDown();
-    bool gameRunning;
-    bool gameOriginal;
-    int gameScene;
-    int gameTileset;
-    int gameBoardTiles;
-    int tilesets;
+    GameState state;
+    SceneManager scene_mgr;
     Mouse* mouse;
-    Board* board;
     Graphics* gfx;
     int windowWidth;
     int windowHeight;
-    int tileXindex;
-    int tileYindex;
-    std::vector<int> pickedTiles;
-    std::vector<Button*> buttonTileset;
-
-    Button* buttonNewgame;
-    Button* buttonExit;
-    Button* buttonOriginal;
-    Button* buttonSimple;
-    Button* buttonEasy;
-    Button* buttonMedium;
-    Button* buttonHard;
-    Button* buttonAgain;
-
-    Text* text_tileset;
-    Text* text_mode;
-    Text* text_difficulty;
-    Text* text_win;
 };
