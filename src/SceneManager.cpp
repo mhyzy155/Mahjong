@@ -1,9 +1,9 @@
 #include "SceneManager.h"
 
-SceneManager::SceneManager() : currScene{new SceneMenuMain()} {}
+SceneManager::SceneManager(Graphics* gfx) : currScene{new SceneMenuMain(gfx)} {}
 
-void SceneManager::draw(Graphics* graphics){
-    currScene->draw(graphics);
+void SceneManager::draw(){
+    currScene->draw();
 }
 
 void SceneManager::react(Mouse* mouse, GameState& state){

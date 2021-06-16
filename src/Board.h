@@ -6,7 +6,6 @@
 
 class Board {
 public:
-    Board(int n);
     Board(int n, int different_tiles);
     ~Board();
     int** getBoard();
@@ -21,12 +20,12 @@ private:
     void clearBoard();
     int loadBoard(int n);
 
-    int boardEmpty = 64;
-    int boardTiles = 1;
-    int boardWidth = 8;
-    int boardHeight = 10;
-    int floors = 3;
+    int boardEmpty;
+    int boardWidth;
+    int boardHeight;
+    int floors;
+    int boardTiles;
     int tiles;
-    bool** bFloor = nullptr;
-    int** iFloor = nullptr;
+    bool** bFloor;
+    int** iFloor;
 };

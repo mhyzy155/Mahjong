@@ -1,5 +1,6 @@
 #include "Mouse.h"
 
+/* 
 void Mouse::buttonDown(Graphics* gfx, Board* board, int& xindex, int& yindex) {
     xindex = -1;
     yindex = -1;
@@ -32,6 +33,14 @@ void Mouse::buttonDown(Graphics* gfx, Board* board, int& xindex, int& yindex) {
         if (!tileFound) i--;
     }
     //printf("\n\n");
+} */
+
+void Mouse::getMouseState(int &x, int &y){
+    x = -1;
+    y = -1;
+    SDL_GetMouseState(&mx, &my);
+    x = mx;
+    y = my;
 }
 
 bool Mouse::isPressed(SDL_Rect rect) {

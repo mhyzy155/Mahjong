@@ -2,8 +2,8 @@
 
 class SceneManager {
    public:
-    SceneManager();
-    void draw(Graphics* graphics);
+    SceneManager(Graphics* gfx);
+    void draw();
     void react(Mouse* mouse, GameState& state);
 
    private:

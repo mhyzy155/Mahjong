@@ -4,22 +4,24 @@
 
 class SceneMenuMain : public Scene {
    public:
-    SceneMenuMain();
-    void draw(Graphics* graphics);
+    SceneMenuMain(Graphics* gfx);
+    void draw();
     std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
 
    private:
+    Graphics* graphics;
     std::unique_ptr<Button> btn_newgame;
     std::unique_ptr<Button> btn_exit;
 };
 
 class SceneMenuTileset : public Scene {
    public:
-    SceneMenuTileset();
-    void draw(Graphics* graphics);
+    SceneMenuTileset(Graphics* gfx);
+    void draw();
     std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
 
    private:
+    Graphics* graphics;
     int tilesets;
     std::unique_ptr<Text> txt_tileset;
     std::vector<std::unique_ptr<Button>> btns_tileset;
@@ -27,11 +29,12 @@ class SceneMenuTileset : public Scene {
 
 class SceneMenuMode : public Scene {
    public:
-    SceneMenuMode();
-    void draw(Graphics* graphics);
+    SceneMenuMode(Graphics* gfx);
+    void draw();
     std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
 
    private:
+    Graphics* graphics;
     std::unique_ptr<Text> txt_mode;
     std::unique_ptr<Button> btn_original;
     std::unique_ptr<Button> btn_simple;
@@ -39,11 +42,12 @@ class SceneMenuMode : public Scene {
 
 class SceneMenuDifficulty : public Scene {
    public:
-    SceneMenuDifficulty();
-    void draw(Graphics* graphics);
+    SceneMenuDifficulty(Graphics* gfx);
+    void draw();
     std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
 
    private:
+    Graphics* graphics;
     std::unique_ptr<Text> txt_difficulty;
     std::unique_ptr<Button> btn_easy;
     std::unique_ptr<Button> btn_medium;
@@ -52,26 +56,36 @@ class SceneMenuDifficulty : public Scene {
 
 class SceneBoard : public Scene {
    public:
-    SceneBoard(const GameState& state);
-    void draw(Graphics* graphics);
+    SceneBoard(Graphics* gfx, const GameState& state);
+    void draw();
     std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
 
    private:
+    Graphics* graphics;
+    Sprite* spr_bg;
+    Sprite* spr_base;
+    Sprite* spr_picked;
+    std::vector<Sprite*> spr_tiles;
+    int tile_offset;
+    int tile_margin;
+    float tile_scale;
+    int tile_width;
+    int tile_height;
+
     Board board;
     int tiles;
     std::vector<int> picked_tiles;
-    int tileXindex;
-    int tileYindex;
-    Graphics* gfx;
 };
 
 class SceneWin : public Scene {
    public:
-    SceneWin();
-    void draw(Graphics* graphics);
+    SceneWin(Graphics* gfx);
+    void draw();
     std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
 
    private:
+    Graphics* graphics;
+    Sprite* spr_bg;
     std::unique_ptr<Text> txt_win;
     std::unique_ptr<Button> btn_again;
     std::unique_ptr<Button> btn_exit;

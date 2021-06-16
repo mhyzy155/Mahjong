@@ -1,27 +1,22 @@
 #include "Graphics.h"
+#include <stdexcept>
+#include <algorithm>
 
-#include <SDL2/SDL_ttf.h>
+//#include <SDL2/SDL_ttf.h>
 
-Graphics::Graphics(SDL_Renderer* gRender, SDL_Window* gWindow, int windowW, int windowH): renderer{gRender}, window{gWindow}, windowWidth{windowW}, windowHeight{windowH} {
-    tileOffset = 8;
-    tileMargin = 4;
-    tileScale = 1;
-    std::string texture_path = "default";
-    graphicsBackground = new Sprite("../assets/textures/" + texture_path + "/background.jpg", renderer);
-    graphicsBase = new Sprite("../assets/textures/" + texture_path + "/base.png", renderer);
-    graphicsPicked = new Sprite("../assets/textures/" + texture_path + "/pickedtile.png", renderer);
-
-    for(int i = 0; i < 9; i++){
-        graphicsTiles.push_back(new Sprite("../assets/textures/" + texture_path + "/new_tile" + std::to_string(i) + ".png", renderer));
+Graphics::Graphics(int windowW, int windowH): renderer{nullptr}, window{nullptr}, windowWidth{windowW}, windowHeight{windowH}, texture_pack{"default"} {
+    if (SDL_CreateWindowAndRenderer(windowWidth, windowHeight, 0, &window, &renderer) == -1) {
+        throw std::runtime_error("SDL_CreateWindowAndRenderer");
     }
-    tileRect = graphicsTiles[0]->getRect();
 }
 
 Graphics::~Graphics() {
-    delete graphicsBackground;
-    delete graphicsBase;
-    delete graphicsPicked;
-    deleteAllTiles();
+    if (renderer) {
+        SDL_DestroyRenderer(renderer);
+    }
+    if (window) {
+        SDL_DestroyWindow(window);
+    }
 }
 
 void Graphics::DrawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b) {
@@ -32,8 +27,9 @@ void Graphics::DrawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b) {
     SDL_RenderFillRect(renderer, &rect);
 }
 
+/*
 void Graphics::DrawBoardSprites(Board* board) {
-    graphicsBackground->DrawSprite((windowWidth - graphicsBackground->getRect().w) / 2, (windowHeight - graphicsBackground->getRect().h) / 2, renderer);
+    graphicsBackground->draw((windowWidth - graphicsBackground->getRect().w) / 2, (windowHeight - graphicsBackground->getRect().h) / 2, renderer);
 
     int** TilesBoard = board->getBoard();
     int empty = board->getBoardEmpty();
@@ -45,7 +41,7 @@ void Graphics::DrawBoardSprites(Board* board) {
             for (int x = 0; x < boardWidth; x++) {
                 int spriteindex = TilesBoard[i][y * boardWidth + x];
                 if (spriteindex != empty) {
-                    graphicsBase->DrawSprite((windowWidth + tileScale * graphicsTiles[spriteindex]->getRect().w * (2 * x - boardWidth) - tileMargin * (boardWidth - 1)) / 2 + (i - 1) * tileOffset * tileScale + x * tileMargin, (windowHeight + tileScale * graphicsTiles[spriteindex]->getRect().h * (2 * y - boardHeight) - tileMargin * (boardHeight - 1)) / 2 - i * tileOffset * tileScale + y * tileMargin, tileScale, renderer);
+                    graphicsBase->draw((windowWidth + tileScale * graphicsTiles[spriteindex]->getRect().w * (2 * x - boardWidth) - tileMargin * (boardWidth - 1)) / 2 + (i - 1) * tileOffset * tileScale + x * tileMargin, (windowHeight + tileScale * graphicsTiles[spriteindex]->getRect().h * (2 * y - boardHeight) - tileMargin * (boardHeight - 1)) / 2 - i * tileOffset * tileScale + y * tileMargin, tileScale, renderer);
                 }
             }
         }
@@ -54,12 +50,12 @@ void Graphics::DrawBoardSprites(Board* board) {
             for (int x = 0; x < boardWidth; x++) {
                 int spriteindex = TilesBoard[i][y * boardWidth + x];
                 if (spriteindex != empty) {
-                    graphicsTiles[spriteindex]->DrawSprite((windowWidth + tileScale * graphicsTiles[spriteindex]->getRect().w * (2 * x - boardWidth) - tileMargin * (boardWidth - 1)) / 2 + i * tileOffset * tileScale + x * tileMargin, (windowHeight + tileScale * graphicsTiles[spriteindex]->getRect().h * (2 * y - boardHeight) - tileMargin * (boardHeight - 1)) / 2 - i * tileOffset * tileScale + y * tileMargin, tileScale, renderer);
+                    graphicsTiles[spriteindex]->draw((windowWidth + tileScale * graphicsTiles[spriteindex]->getRect().w * (2 * x - boardWidth) - tileMargin * (boardWidth - 1)) / 2 + i * tileOffset * tileScale + x * tileMargin, (windowHeight + tileScale * graphicsTiles[spriteindex]->getRect().h * (2 * y - boardHeight) - tileMargin * (boardHeight - 1)) / 2 - i * tileOffset * tileScale + y * tileMargin, tileScale, renderer);
                     for (std::vector<int>::iterator it = graphicsPickedTiles.begin(); it != graphicsPickedTiles.end(); ++it) {
                         if (*it == (y * boardWidth + x) && i == (board->getBoardFloors() - 1)) {
-                            graphicsPicked->DrawSprite((windowWidth + tileScale * graphicsPicked->getRect().w * (2 * x - boardWidth) - tileMargin * (boardWidth - 1)) / 2 + i * tileOffset * tileScale + x * tileMargin, (windowHeight + tileScale * graphicsPicked->getRect().h * (2 * y - boardHeight) - tileMargin * (boardHeight - 1)) / 2 - i * tileOffset * tileScale + y * tileMargin, tileScale, renderer);
+                            graphicsPicked->draw((windowWidth + tileScale * graphicsPicked->getRect().w * (2 * x - boardWidth) - tileMargin * (boardWidth - 1)) / 2 + i * tileOffset * tileScale + x * tileMargin, (windowHeight + tileScale * graphicsPicked->getRect().h * (2 * y - boardHeight) - tileMargin * (boardHeight - 1)) / 2 - i * tileOffset * tileScale + y * tileMargin, tileScale, renderer);
                         } else if (*it == (y * boardWidth + x) && TilesBoard[i + 1][y * boardWidth + x] == empty) {
-                            graphicsPicked->DrawSprite((windowWidth + tileScale * graphicsPicked->getRect().w * (2 * x - boardWidth) - tileMargin * (boardWidth - 1)) / 2 + i * tileOffset * tileScale + x * tileMargin, (windowHeight + tileScale * graphicsPicked->getRect().h * (2 * y - boardHeight) - tileMargin * (boardHeight - 1)) / 2 - i * tileOffset * tileScale + y * tileMargin, tileScale, renderer);
+                            graphicsPicked->draw((windowWidth + tileScale * graphicsPicked->getRect().w * (2 * x - boardWidth) - tileMargin * (boardWidth - 1)) / 2 + i * tileOffset * tileScale + x * tileMargin, (windowHeight + tileScale * graphicsPicked->getRect().h * (2 * y - boardHeight) - tileMargin * (boardHeight - 1)) / 2 - i * tileOffset * tileScale + y * tileMargin, tileScale, renderer);
                         }
                     }
                 }
@@ -69,8 +65,8 @@ void Graphics::DrawBoardSprites(Board* board) {
 }
 
 void Graphics::DrawBG() {
-    graphicsBackground->DrawSprite((windowWidth - graphicsBackground->getRect().w) / 2, (windowHeight - graphicsBackground->getRect().h) / 2, renderer);
-}
+    graphicsBackground->draw((windowWidth - graphicsBackground->getRect().w) / 2, (windowHeight - graphicsBackground->getRect().h) / 2, renderer);
+} */
 
 //clear the window
 void Graphics::StartDraw() {
@@ -80,6 +76,7 @@ void Graphics::StartDraw() {
     SDL_RenderClear(renderer);
 }
 
+/*
 //clear the window and draw graphics
 void Graphics::Draw(Board* board) {
     if (SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE) < 0) {
@@ -87,50 +84,27 @@ void Graphics::Draw(Board* board) {
     }
     SDL_RenderClear(renderer);
 
-    graphicsBackground->DrawSprite((windowWidth - graphicsBackground->getRect().w) / 2, (windowHeight - graphicsBackground->getRect().h) / 2, renderer);
+    graphicsBackground->draw((windowWidth - graphicsBackground->getRect().w) / 2, (windowHeight - graphicsBackground->getRect().h) / 2, renderer);
     DrawBoardSprites(board);
 
     SDL_RenderPresent(renderer);
-}
+} */
 
 //draw graphics
 void Graphics::EndDraw() {
     SDL_RenderPresent(renderer);
 }
 
-void Graphics::addSprite(Sprite* sprite) {
-    graphicsTiles.push_back(sprite);
-}
-
-void Graphics::addSprite(Sprite* sprite, int n) {
-    std::vector<Sprite*>::iterator it = graphicsTiles.begin();
-    for (int i = 2; i <= n; i++) {
-        it++;
+std::list<Sprite*> Graphics::loadSprites(std::list<std::string> filenames){
+    sprites.clear();
+    for(const auto& filename : filenames){
+        sprites.push_back(std::make_unique<Sprite>("../assets/textures/" + texture_pack + "/" + filename, renderer));
     }
-    graphicsTiles.insert(it, sprite);
-}
 
-void Graphics::deleteAllTiles() {
-    for (std::vector<Sprite*>::iterator it = graphicsTiles.begin(); it != graphicsTiles.end(); ++it) {
-        delete (*it);
-    }
-    graphicsTiles.clear();
-}
+    std::list<Sprite*> output;
+    std::transform(sprites.begin(), sprites.end(), std::back_inserter(output), [](std::unique_ptr<Sprite> &s){return s.get();});
 
-void Graphics::grabPickedTiles(const std::vector<int>& vector) {
-    graphicsPickedTiles = vector;
-}
-
-int Graphics::getOffset() {
-    return tileOffset;
-}
-
-int Graphics::getMargin() {
-    return tileMargin;
-}
-
-float Graphics::getScale() {
-    return tileScale;
+    return output;
 }
 
 SDL_Renderer* const Graphics::getRenderer(){
@@ -143,12 +117,4 @@ int Graphics::getWindowWidth() {
 
 int Graphics::getWindowHeight() {
     return windowHeight;
-}
-
-int Graphics::getTileWidth() {
-    return tileRect.w;
-}
-
-int Graphics::getTileHeight() {
-    return tileRect.h;
 }

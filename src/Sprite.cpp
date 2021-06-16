@@ -16,13 +16,13 @@ Sprite::~Sprite(){
     }
 }
 
-void Sprite::DrawSprite(int x, int y, SDL_Renderer* renderer) {
+void Sprite::draw(int x, int y, SDL_Renderer* renderer) {
     img_rect.x = x;
     img_rect.y = y;
     SDL_RenderCopy(renderer, texture, NULL, &img_rect);
 }
 
-void Sprite::DrawSprite(int x, int y, float scale, SDL_Renderer* renderer) {
+void Sprite::draw(int x, int y, float scale, SDL_Renderer* renderer) {
     img_rect.x = x;
     img_rect.y = y;
     SDL_Rect dest_rect = img_rect;

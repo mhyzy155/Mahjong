@@ -1,63 +1,28 @@
 #include "Game.h"
 
-Game::Game() : state{true, true, 0, 3}, scene_mgr{}, mouse{nullptr}, gfx{nullptr}, window{nullptr}, renderer{nullptr} {
-    if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-        timer = new Timer();
-
-        //windowWidth = 1280;
-        //windowHeight = 720;
-        windowWidth = 1600;
-        windowHeight = 900;
-
-        mouse = new Mouse();
-
-        printf("Creating a window... ");
-        if (SDL_CreateWindowAndRenderer(windowWidth, windowHeight, 0, &window, &renderer) == 0) {
-            printf("- OK\n");
-            gfx = new Graphics(renderer, window, windowWidth, windowHeight);
-        } else {
-            printf("- error!\n");
-        }
-    } else {
-        printf("SDL_Init error\n");
-        state.running = false;
-    }
-}
+Game::Game() : graphics{new Graphics(1600, 900)}, mouse{new Mouse()}, state{true, true, 0, 3}, scene_mgr{graphics} {}
 
 Game::~Game() {
     state.running = false;
 
-    if (renderer) {
-        SDL_DestroyRenderer(renderer);
-    }
-    if (window) {
-        SDL_DestroyWindow(window);
+    if(mouse) {
+        delete mouse;
+        mouse = nullptr;
     }
 
-    printf("Closing a window... ");
-
-    if (gfx != nullptr) {
-        delete gfx;
-        gfx = nullptr;
+    if (graphics) {
+        delete graphics;
+        graphics = nullptr;
     }
-
-    delete mouse;
-    mouse = nullptr;
-    delete timer;
-    timer = nullptr;
-
-    SDL_Quit();
-
-    printf("- OK\n");
 }
 
 void Game::Update() {
+    int dtime = timer.GetDelta();
     SDL_Event event;
-    int dtime = timer->GetDelta();
-    while (state.running) {
-        gfx->StartDraw();
-        scene_mgr.draw(gfx);
-        gfx->EndDraw();
+    //while (state.running) {
+        graphics->StartDraw();
+        scene_mgr.draw();
+        graphics->EndDraw();
 
         /*
         ///FPS counter
@@ -78,7 +43,7 @@ void Game::Update() {
                     break;
             }
         }
-    }
+    //}
 }
 
 bool Game::getStatus() {

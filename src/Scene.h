@@ -7,7 +7,7 @@
 
 class Scene {
    public:
-    virtual void draw(Graphics* graphics) = 0;
+    virtual void draw() = 0;
     virtual std::unique_ptr<Scene> react(Mouse* mouse, GameState& state) = 0;
     virtual ~Scene(){};
 };

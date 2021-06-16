@@ -1,45 +1,6 @@
 #include "Board.h"
 
-Board::Board(int n) {
-    loadBoard(n);
-    clearBoard();
-
-    int tilecounter = tiles;
-    while (tilecounter > 0) {
-        int tileindex = rand() % boardTiles;
-        int paircounter = 0;
-        while (paircounter < 2) {
-            int boardindex = rand() % (boardHeight * boardWidth);
-            int floor = rand() % floors;
-            if (floor == 0) {
-                if (bFloor[0][boardindex] == true && iFloor[0][boardindex] == boardEmpty) {
-                    iFloor[0][boardindex] = tileindex;
-                    paircounter++;
-                    tilecounter--;
-                }
-            } else {
-                if (bFloor[floor][boardindex] == true && iFloor[floor][boardindex] == boardEmpty && iFloor[floor - 1][boardindex] != boardEmpty) {
-                    iFloor[floor][boardindex] = tileindex;
-                    paircounter++;
-                    tilecounter--;
-                }
-            }
-        }
-    }
-
-    /*for (int i = 0; i < floors; i++) {
-		for (int y = 0; y < boardHeight; y++) {
-			for (int x = 0; x < boardWidth; x++) {
-				printf("%d ", iFloor[i][y*boardWidth + x]);
-			}
-			printf("\n");
-		}
-		printf("\n\n");
-	}*/
-}
-
-Board::Board(int n, int different_tiles) {
-    boardTiles = different_tiles;
+Board::Board(int n, int different_tiles = 1) : boardEmpty{64}, boardWidth{8}, boardHeight{10}, floors{3}, boardTiles{different_tiles}, bFloor{nullptr}, iFloor{nullptr} {
     loadBoard(n);
     clearBoard();
 
