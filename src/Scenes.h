@@ -63,18 +63,7 @@ class SceneBoard : public Scene {
    private:
     Graphics* graphics;
     Sprite* spr_bg;
-    Sprite* spr_base;
-    Sprite* spr_picked;
-    std::vector<Sprite*> spr_tiles;
-    int tile_offset;
-    int tile_margin;
-    float tile_scale;
-    int tile_width;
-    int tile_height;
-
     Board board;
-    int tiles;
-    std::vector<int> picked_tiles;
 };
 
 class SceneWin : public Scene {

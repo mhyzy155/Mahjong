@@ -4,28 +4,39 @@
 #include <string>
 #include <vector>
 
+#include "Graphics.h"
+
 class Board {
-public:
-    Board(int n, int different_tiles);
+   public:
+    Board(Graphics* gfx, int tileset, bool mode_original, int different_tiles = 9);
     ~Board();
-    int** getBoard();
-    int getBoardTiles();
-    int getBoardFloors();
-    int getBoardWidth();
-    int getBoardHeight();
-    int getBoardEmpty();
-    int getBoardTilesNumber();
+    void draw();
+    bool react(int mx, int my);
 
-private:
-    void clearBoard();
+   private:
     int loadBoard(int n);
+    void clearBoard();
+    void fillBoard();
 
-    int boardEmpty;
-    int boardWidth;
-    int boardHeight;
-    int floors;
-    int boardTiles;
-    int tiles;
+    bool mode_original;
+    int board_empty;
+    int board_width;
+    int board_height;
+    int board_floors;
+    int board_tiles;
+    int tiles_left;
     bool** bFloor;
     int** iFloor;
+
+    Graphics* graphics;
+    Sprite* spr_base;
+    Sprite* spr_picked;
+    std::vector<Sprite*> spr_tiles;
+    int tile_offset;
+    int tile_margin;
+    float tile_scale;
+    int tile_width;
+    int tile_height;
+
+    std::pair<int, int> tile_picked;
 };

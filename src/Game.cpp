@@ -5,7 +5,7 @@ Game::Game() : graphics{new Graphics(1600, 900)}, mouse{new Mouse()}, state{true
 Game::~Game() {
     state.running = false;
 
-    if(mouse) {
+    if (mouse) {
         delete mouse;
         mouse = nullptr;
     }
@@ -17,33 +17,29 @@ Game::~Game() {
 }
 
 void Game::Update() {
-    int dtime = timer.GetDelta();
+    //int dtime = timer.GetDelta();
+    graphics->startDraw();
+    scene_mgr.draw();
+    graphics->endDraw();
+
+    /*///FPS counter
+    if (dtime > 0) {
+        printf("FPS: %d\n", 1000 / dtime);
+    } else {
+        printf("Inf.\n");
+    } */
+
     SDL_Event event;
-    //while (state.running) {
-        graphics->StartDraw();
-        scene_mgr.draw();
-        graphics->EndDraw();
-
-        /*
-        ///FPS counter
-        if (dtime > 0) {
-            printf("FPS: %d\n", 1000 / dtime);
-        } else {
-            printf("Inf.\n");
+    while (SDL_WaitEventTimeout(&event, 10)) {
+        switch (event.type) {
+            case SDL_QUIT:
+                state.running = false;
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                scene_mgr.react(mouse, state);
+                break;
         }
-        */
-
-        if (SDL_WaitEvent(&event)) {
-            switch (event.type) {
-                case SDL_QUIT:
-                    state.running = false;
-                    break;
-                case SDL_MOUSEBUTTONDOWN:
-                    scene_mgr.react(mouse, state);
-                    break;
-            }
-        }
-    //}
+    }
 }
 
 bool Game::getStatus() {
