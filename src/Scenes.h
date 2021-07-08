@@ -1,6 +1,13 @@
 #include "Board.h"
-#include "Button.h"
+#include "ButtonSwitch.h"
 #include "Scene.h"
+
+class SceneDummy : public Scene {
+    public:
+    SceneDummy(Graphics* gfx = nullptr);
+    void draw();
+    std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
+};
 
 class SceneMenuMain : public Scene {
    public:
@@ -54,6 +61,32 @@ class SceneMenuDifficulty : public Scene {
     std::unique_ptr<Button> btn_hard;
 };
 
+class OverlayMenuQuick : public Scene {
+   public:
+    OverlayMenuQuick(Graphics* gfx);
+    void draw();
+    std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
+
+   private:
+    Graphics* graphics;
+    std::unique_ptr<Button> btn_resume;
+    std::unique_ptr<Button> btn_settings;
+    std::unique_ptr<Button> btn_exit;
+};
+
+class OverlaySettings : public Scene {
+   public:
+    OverlaySettings(Graphics* gfx, const GameState& state);
+    void draw();
+    std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
+
+   private:
+    Graphics* graphics;
+    std::unique_ptr<Text> txt_texturepack;
+    std::unique_ptr<ButtonSwitch> btn_texturepack;
+    std::unique_ptr<Button> btn_return;
+};
+
 class SceneBoard : public Scene {
    public:
     SceneBoard(Graphics* gfx, const GameState& state);
@@ -64,6 +97,8 @@ class SceneBoard : public Scene {
     Graphics* graphics;
     Sprite* spr_bg;
     Board board;
+    std::unique_ptr<Button> btn_overlay;
+    std::unique_ptr<Scene> overlay;
 };
 
 class SceneWin : public Scene {

@@ -31,10 +31,30 @@ void Sprite::draw(int x, int y, float scale, SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, texture, NULL, &dest_rect);
 }
 
+void Sprite::updateTex(std::string path, SDL_Renderer* renderer){
+    auto texture_new = IMG_LoadTexture(renderer, path.c_str());
+    if (texture_new == nullptr) {
+        printf("Failed to load texture %s\n\terror : %s \n", path.c_str(), SDL_GetError());
+    } else{
+        img_path = path;
+        if(texture){
+            SDL_DestroyTexture(texture);
+            texture = nullptr;
+        }
+        texture = texture_new;
+        printf("Image %s loaded\n", img_path.c_str());
+        SDL_QueryTexture(texture, NULL, NULL, &img_rect.w, &img_rect.h);
+    }
+}
+
 SDL_Texture* Sprite::getTex() const {
     return texture;
 }
 
 SDL_Rect Sprite::getRect() {
     return img_rect;
+}
+
+std::string Sprite::getPath(){
+    return img_path;
 }

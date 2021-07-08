@@ -4,6 +4,13 @@
 
 #include "Colors.h"
 
+// Dummy Scene
+SceneDummy::SceneDummy(Graphics* gfx) {}
+
+void SceneDummy::draw() {}
+
+std::unique_ptr<Scene> SceneDummy::react(Mouse* mouse, GameState& state) { return std::unique_ptr<Scene>(new SceneDummy()); }
+
 // MenuMain
 SceneMenuMain::SceneMenuMain(Graphics* gfx)
     : graphics{gfx},
@@ -107,9 +114,64 @@ std::unique_ptr<Scene> SceneMenuDifficulty::react(Mouse* mouse, GameState& state
     return nullptr;
 }
 
+// Quick Menu Overlay
+OverlayMenuQuick::OverlayMenuQuick(Graphics* gfx)
+    : graphics{gfx},
+      btn_resume{new Button(new Text("Resume", 50, Colors::green), Colors::beige, 20)},
+      btn_settings{new Button(new Text("Settings", 50, Colors::green), Colors::beige, 20)},
+      btn_exit{new Button(new Text("Exit", 50, Colors::red), Colors::beige, 20)} {}
+
+void OverlayMenuQuick::draw() {
+    auto window_width = graphics->getWindowWidth();
+    auto window_height = graphics->getWindowHeight();
+    auto renderer = graphics->getRenderer();
+    btn_resume->draw(window_width / 2, window_height / 2 - 100, renderer);
+    btn_settings->draw(window_width / 2, window_height / 2, renderer);
+    btn_exit->draw(window_width / 2, window_height / 2 + 100, renderer);
+}
+
+std::unique_ptr<Scene> OverlayMenuQuick::react(Mouse* mouse, GameState& state) {
+    if (mouse->isPressed(btn_resume->getRect())) {
+        return std::unique_ptr<Scene>(new SceneDummy());
+    } else if (mouse->isPressed(btn_settings->getRect())) {
+        return std::unique_ptr<Scene>(new OverlaySettings(graphics, state));
+    } else if (mouse->isPressed(btn_exit->getRect())) {
+        state.running = false;
+        return nullptr;
+    }
+    return nullptr;
+}
+
+// Settings Overlay
+OverlaySettings::OverlaySettings(Graphics* gfx, const GameState& state)
+    : graphics{gfx},
+      txt_texturepack{new Text("Texture pack:", 50, Colors::green)},
+      btn_texturepack{new ButtonSwitch({std::string{"default"}, std::string{"alternative"}}, 50, Colors::green, Colors::beige, 20, state.texturepack)},
+      btn_return{new Button(new Text("Return", 50, Colors::green), Colors::beige, 20)} {}
+
+void OverlaySettings::draw() {
+    auto window_width = graphics->getWindowWidth();
+    auto window_height = graphics->getWindowHeight();
+    auto renderer = graphics->getRenderer();
+    txt_texturepack->draw((window_width - txt_texturepack->getRect().w) / 2, window_height / 2 - 50, renderer);
+    btn_texturepack->draw((window_width + btn_texturepack->getRect().w) / 2, window_height / 2, renderer);
+    btn_return->draw(window_width / 2, window_height / 2 + 100, renderer);
+}
+
+std::unique_ptr<Scene> OverlaySettings::react(Mouse* mouse, GameState& state) {
+    if (mouse->isPressed(btn_texturepack->getRect())) {
+        state.texturepack = btn_texturepack->changeState();
+        graphics->changeTexturepack(state.texturepack);
+        return nullptr;
+    } else if (mouse->isPressed(btn_return->getRect())) {
+        return std::unique_ptr<Scene>(new OverlayMenuQuick(graphics));
+    }
+    return nullptr;
+}
+
 // Board
 SceneBoard::SceneBoard(Graphics* gfx, const GameState& state)
-    : graphics{gfx}, spr_bg{graphics->loadSprites(std::list<std::string>{"background.jpg"}, true).front()}, board{graphics, state.tileset_chosen, state.mode_original} {}
+    : graphics{gfx}, spr_bg{graphics->loadSprites(std::list<std::string>{"background.jpg"}, true).front()}, board{graphics, state.tileset_chosen, state.mode_original}, btn_overlay{new Button(new Text(".", 20, Colors::green), Colors::beige, 20)}, overlay{nullptr} {}
 
 void SceneBoard::draw() {
     auto window_width = graphics->getWindowWidth();
@@ -117,9 +179,27 @@ void SceneBoard::draw() {
     auto renderer = graphics->getRenderer();
     spr_bg->draw((window_width - spr_bg->getRect().w) / 2, (window_height - spr_bg->getRect().h) / 2, renderer);
     board.draw();
+    btn_overlay->draw(0, 0, renderer);
+    if (overlay) overlay->draw();
 }
 
 std::unique_ptr<Scene> SceneBoard::react(Mouse* mouse, GameState& state) {
+    if (overlay) {
+        auto overlay_new = overlay->react(mouse, state);
+        if (overlay_new) {
+            if (dynamic_cast<SceneDummy*>(overlay_new.get())) {
+                overlay = nullptr;
+            } else {
+                overlay.swap(overlay_new);
+            }
+        }
+        return nullptr;
+    }
+
+    if (mouse->isPressed(btn_overlay->getRect())) {
+        overlay = std::unique_ptr<Scene>(new OverlayMenuQuick(graphics));
+        return nullptr;
+    }
     int mx;
     int my;
     mouse->getMouseState(mx, my);

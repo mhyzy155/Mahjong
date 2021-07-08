@@ -17,6 +17,7 @@ class Graphics {
     void startDraw();
     void endDraw();
     std::list<Sprite*> loadSprites(std::list<std::string> filenames, bool clear = false);
+    void changeTexturepack(int id);
 
     SDL_Renderer* const getRenderer();
     int getWindowWidth();

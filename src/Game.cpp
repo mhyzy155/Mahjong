@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game() : graphics{new Graphics(1600, 900)}, mouse{new Mouse()}, state{true, true, 0, 3}, scene_mgr{graphics} {}
+Game::Game() : graphics{new Graphics(1600, 900)}, mouse{new Mouse()}, state{true, true, 0, 3, 0}, scene_mgr{graphics} {}
 
 Game::~Game() {
     state.running = false;

@@ -16,6 +16,8 @@ Button::Button(Text* txt, SDL_Color col, int margin, int w, int h) : button_text
     button_rect.h += 2 * margin;
 }
 
+Button::Button(const Button& btn) : button_text{new Text(*(btn.button_text))}, button_color{btn.button_color}, text_rect{btn.text_rect}, button_rect{btn.button_rect} {}
+
 Button::~Button() {
     if (button_text) {
         delete button_text;
@@ -35,4 +37,8 @@ void Button::draw(int x, int y, SDL_Renderer* renderer) {
 
 SDL_Rect Button::getRect() {
     return button_rect;
+}
+
+void Button::setRect(SDL_Rect rect){
+    button_rect = rect;
 }
