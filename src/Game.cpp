@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game() : graphics{new Graphics(1600, 900)}, mouse{new Mouse()}, state{true, true, 0, 3, 0}, scene_mgr{graphics} {}
+Game::Game() : graphics{new Graphics(1600, 900)}, mouse{new Mouse()}, state{true, true, 0, 3, 0}, scene_mgr{graphics, state} {}
 
 Game::~Game() {
     state.running = false;
@@ -35,8 +35,11 @@ void Game::Update() {
             case SDL_QUIT:
                 state.running = false;
                 break;
+            case SDL_KEYDOWN:
+                scene_mgr.reactKDown(event.key.keysym.sym);
+                break;
             case SDL_MOUSEBUTTONDOWN:
-                scene_mgr.react(mouse, state);
+                scene_mgr.reactMBDown(mouse, event.button.button);
                 break;
         }
     }

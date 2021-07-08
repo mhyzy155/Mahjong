@@ -4,16 +4,15 @@
 
 class SceneDummy : public Scene {
     public:
-    SceneDummy(Graphics* gfx = nullptr);
-    void draw();
-    std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
+    SceneDummy(){};
 };
 
 class SceneMenuMain : public Scene {
    public:
     SceneMenuMain(Graphics* gfx);
     void draw();
-    std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
+    std::unique_ptr<Scene> reactMBDown(Mouse* mouse, Uint8 m_button, GameState& state);
+    std::unique_ptr<Scene> reactKDown(SDL_Keycode k_code, GameState& state);
 
    private:
     Graphics* graphics;
@@ -25,7 +24,7 @@ class SceneMenuTileset : public Scene {
    public:
     SceneMenuTileset(Graphics* gfx);
     void draw();
-    std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
+    std::unique_ptr<Scene> reactMBDown(Mouse* mouse, Uint8 m_button, GameState& state);
 
    private:
     Graphics* graphics;
@@ -38,7 +37,7 @@ class SceneMenuMode : public Scene {
    public:
     SceneMenuMode(Graphics* gfx);
     void draw();
-    std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
+    std::unique_ptr<Scene> reactMBDown(Mouse* mouse, Uint8 m_button, GameState& state);
 
    private:
     Graphics* graphics;
@@ -51,7 +50,7 @@ class SceneMenuDifficulty : public Scene {
    public:
     SceneMenuDifficulty(Graphics* gfx);
     void draw();
-    std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
+    std::unique_ptr<Scene> reactMBDown(Mouse* mouse, Uint8 m_button, GameState& state);
 
    private:
     Graphics* graphics;
@@ -65,7 +64,8 @@ class OverlayMenuQuick : public Scene {
    public:
     OverlayMenuQuick(Graphics* gfx);
     void draw();
-    std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
+    std::unique_ptr<Scene> reactMBDown(Mouse* mouse, Uint8 m_button, GameState& state);
+    std::unique_ptr<Scene> reactKDown(SDL_Keycode k_code, GameState& state);
 
    private:
     Graphics* graphics;
@@ -78,7 +78,8 @@ class OverlaySettings : public Scene {
    public:
     OverlaySettings(Graphics* gfx, const GameState& state);
     void draw();
-    std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
+    std::unique_ptr<Scene> reactMBDown(Mouse* mouse, Uint8 m_button, GameState& state);
+    std::unique_ptr<Scene> reactKDown(SDL_Keycode k_code, GameState& state);
 
    private:
     Graphics* graphics;
@@ -91,13 +92,13 @@ class SceneBoard : public Scene {
    public:
     SceneBoard(Graphics* gfx, const GameState& state);
     void draw();
-    std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
+    std::unique_ptr<Scene> reactMBDown(Mouse* mouse, Uint8 m_button, GameState& state);
+    std::unique_ptr<Scene> reactKDown(SDL_Keycode k_code, GameState& state);
 
    private:
     Graphics* graphics;
     Sprite* spr_bg;
     Board board;
-    std::unique_ptr<Button> btn_overlay;
     std::unique_ptr<Scene> overlay;
 };
 
@@ -105,7 +106,8 @@ class SceneWin : public Scene {
    public:
     SceneWin(Graphics* gfx);
     void draw();
-    std::unique_ptr<Scene> react(Mouse* mouse, GameState& state);
+    std::unique_ptr<Scene> reactMBDown(Mouse* mouse, Uint8 m_button, GameState& state);
+    std::unique_ptr<Scene> reactKDown(SDL_Keycode k_code, GameState& state);
 
    private:
     Graphics* graphics;

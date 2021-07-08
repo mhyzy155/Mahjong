@@ -8,7 +8,8 @@
 
 class Scene {
    public:
-    virtual void draw() = 0;
-    virtual std::unique_ptr<Scene> react(Mouse* mouse, GameState& state) = 0;
+    virtual void draw(){};
+    virtual std::unique_ptr<Scene> reactMBDown(Mouse* mouse, Uint8 m_button, GameState& state){return nullptr;};
+    virtual std::unique_ptr<Scene> reactKDown(SDL_Keycode k_code, GameState& state){return nullptr;};
     virtual ~Scene(){};
 };

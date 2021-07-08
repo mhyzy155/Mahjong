@@ -42,12 +42,20 @@ void Graphics::endDraw() {
 
 std::list<Sprite*> Graphics::loadSprites(std::list<std::string> filenames, bool clear) {
     if (clear) sprites.clear();
+    std::list<Sprite*> output;
     for (const auto& filename : filenames) {
-        sprites.push_back(std::make_unique<Sprite>("../assets/textures/" + texture_pack + "/" + filename, renderer));
+        auto path = "../assets/textures/" + texture_pack + "/" + filename;
+        auto result = std::find_if(sprites.begin(), sprites.end(), [&path](const auto& s) { return s->getPath() == path; });
+        if (result == sprites.end()) {
+            sprites.push_back(std::make_unique<Sprite>(path, renderer));
+            output.push_back(sprites.back().get());
+        } else {
+            output.push_back(result->get());
+        }
     }
 
-    std::list<Sprite*> output;
-    std::transform(sprites.end() - filenames.size(), sprites.end(), std::back_inserter(output), [](std::unique_ptr<Sprite>& s) { return s.get(); });
+    //std::list<Sprite*> output;
+    //std::transform(sprites.end() - filenames.size(), sprites.end(), std::back_inserter(output), [](std::unique_ptr<Sprite>& s) { return s.get(); });
 
     return output;
 }
@@ -63,7 +71,7 @@ void Graphics::changeTexturepack(int id) {
         default:
             return;
     }
-    
+
     for (auto& sprite : sprites) {
         sprite->updateTex("../assets/textures/" + texture_pack + "/" + std::filesystem::path(sprite->getPath()).filename().c_str(), renderer);
     }
